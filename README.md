@@ -30,16 +30,17 @@ has been restored correctly.
 ```
 pyenv shell 3.8.3
 python -m venv .venv
+source .venv/bin/activate
 pip install --upgrade pip
 pip install poetry
 poetry install
 ```
 
-This makes an executable `secrets-to-paper` available in your `$PATH` after poetry
+This makes an executable `stp` available in your `$PATH` after poetry
 installations. During development, it's often more convenient to run
 
 ```
-poetry run secrets-to-paper <private-key-path>
+poetry run stp ...
 ```
 
 
