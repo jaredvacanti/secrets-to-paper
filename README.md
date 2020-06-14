@@ -11,18 +11,24 @@ a new computation for
 > allows the second argument to be negative, permitting computation of modular
 > inverses.
 
-## Usage
+## Dependencies
 
-```
-secrets-to-paper 
-```
+[Paperkey](http://www.jabberwocky.com/software/paperkey/) is a command line tool
+to export GnuPG keys on paper. It reduces the size of the exported key, by
+removing the public key parts from the private key. Paperkey also includes
+CRC-24 checksums in the key to allow the user to check whether their private key
+has been restored correctly.
+
+- paperkey (for GPG keys)
+- zbar/libzbar0
+
 
 ## Development
 
 #### Initializing a virtual environment:
 
 ```
-pyenv local 3.8.3
+pyenv shell 3.8.3
 python -m venv .venv
 pip install --upgrade pip
 pip install poetry
