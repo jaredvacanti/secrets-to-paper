@@ -7,6 +7,36 @@ from pyzbar.pyzbar import decode
 from PIL import Image
 
 
+class Mutex(click.Option):
+    def __init__(self, *args, **kwargs):
+        self.not_required_if: list = kwargs.pop("not_required_if")
+
+        assert self.not_required_if, "'not_required_if' parameter required"
+        kwargs["help"] = (
+            kwargs.get("help", "")
+            + "Option is mutually exclusive with "
+            + ", ".join(self.not_required_if)
+            + "."
+        ).strip()
+        super(Mutex, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        current_opt: bool = self.name in opts
+        for mutex_opt in self.not_required_if:
+            if mutex_opt in opts:
+                if current_opt:
+                    raise click.UsageError(
+                        "Illegal usage: '"
+                        + str(self.name)
+                        + "' is mutually exclusive with "
+                        + str(mutex_opt)
+                        + "."
+                    )
+                else:
+                    self.prompt = None
+        return super(Mutex, self).handle_parse_result(ctx, opts, args)
+
+
 # Primary Click Group
 @click.group()
 @click.option("--debug/--no-debug", default=False)
@@ -19,11 +49,13 @@ def stp(debug):
     "generate", short_help="Helper function to generate private key from P and Q.",
 )
 @click.argument("public-key-path", type=click.Path())
+@click.option("--p-path", cls=Mutex, not_required_if=["p"])
 @click.option(
-    "--p", help="The prime p.",
+    "--p", prompt=True, cls=Mutex, not_required_if=["p-path"], help="The prime p."
 )
+@click.option("--q-path", cls=Mutex, not_required_if=["q"])
 @click.option(
-    "--q", help="The prime q.",
+    "--q", prompt=True, cls=Mutex, not_required_if=["q-path"], help="The prime q."
 )
 @click.option(
     "--n",
@@ -33,12 +65,21 @@ def stp(debug):
 @click.option(
     "--e", help="The private exponent e. Defaults to 010001.", default="010001"
 )
-def generate(public_key_path, p, q, n, e):
+def generate(public_key_path, p_path=None, p=None, q_path=None, q=None, n=None, e=None):
     """
     Generate a secret key from public key and secret numbers.
     """
+    if p_path is not None and q_path is not None:
 
-    generate_key(public_key_path, p, q, n, e)
+        with open(p_path) as f:
+            p = f.readline()
+
+        with open(q_path) as f:
+            q = f.readline()
+        generate_key(public_key_path, p, q, n, e)
+
+    else:
+        generate_key(public_key_path, p, q, n, e)
 
 
 # Export Subcommand
