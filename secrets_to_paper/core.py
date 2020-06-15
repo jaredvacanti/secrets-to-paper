@@ -1,6 +1,6 @@
 import click
-import secrets_to_paper.export as export
-import secrets_to_paper.parse as parse
+from secrets_to_paper.export import write_secret_to_disk
+from secrets_to_paper.parse import pdf_to_secret
 from secrets_to_paper.generate import generate_key
 import qrcode
 from pyzbar.pyzbar import decode
@@ -48,15 +48,14 @@ def stp(debug):
 @stp.command(
     "generate", short_help="Helper function to generate private key from P and Q.",
 )
-@click.argument("public-key-path", type=click.Path())
+@click.option(
+    "--public-key-path", type=click.Path(), cls=Mutex, not_required_if=["public-key"]
+)
+@click.option("--public-key", cls=Mutex, not_required_if=["public-key-path"])
 @click.option("--p-path", cls=Mutex, not_required_if=["p"])
-@click.option(
-    "--p", prompt=True, cls=Mutex, not_required_if=["p-path"], help="The prime p."
-)
+@click.option("--p", cls=Mutex, not_required_if=["p-path"], help="The prime p.")
 @click.option("--q-path", cls=Mutex, not_required_if=["q"])
-@click.option(
-    "--q", prompt=True, cls=Mutex, not_required_if=["q-path"], help="The prime q."
-)
+@click.option("--q", cls=Mutex, not_required_if=["q-path"], help="The prime q.")
 @click.option(
     "--n",
     help="The private number n.",
@@ -65,7 +64,16 @@ def stp(debug):
 @click.option(
     "--e", help="The private exponent e. Defaults to 010001.", default="010001"
 )
-def generate(public_key_path, p_path=None, p=None, q_path=None, q=None, n=None, e=None):
+def generate(
+    public_key_path=None,
+    public_key=None,
+    p_path=None,
+    p=None,
+    q_path=None,
+    q=None,
+    n=None,
+    e=None,
+):
     """
     Generate a secret key from public key and secret numbers.
     """
