@@ -6,37 +6,6 @@ import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
 
-
-class Mutex(click.Option):
-    def __init__(self, *args, **kwargs):
-        self.not_required_if: list = kwargs.pop("not_required_if")
-
-        assert self.not_required_if, "'not_required_if' parameter required"
-        kwargs["help"] = (
-            kwargs.get("help", "")
-            + "Option is mutually exclusive with "
-            + ", ".join(self.not_required_if)
-            + "."
-        ).strip()
-        super(Mutex, self).__init__(*args, **kwargs)
-
-    def handle_parse_result(self, ctx, opts, args):
-        current_opt: bool = self.name in opts
-        for mutex_opt in self.not_required_if:
-            if mutex_opt in opts:
-                if current_opt:
-                    raise click.UsageError(
-                        "Illegal usage: '"
-                        + str(self.name)
-                        + "' is mutually exclusive with "
-                        + str(mutex_opt)
-                        + "."
-                    )
-                else:
-                    self.prompt = None
-        return super(Mutex, self).handle_parse_result(ctx, opts, args)
-
-
 # Primary Click Group
 @click.group()
 @click.option("--debug/--no-debug", default=False)
@@ -48,14 +17,12 @@ def stp(debug):
 @stp.command(
     "generate", short_help="Helper function to generate private key from P and Q.",
 )
-@click.option(
-    "--public-key-path", type=click.Path(), cls=Mutex, not_required_if=["public-key"]
-)
-@click.option("--public-key", cls=Mutex, not_required_if=["public-key-path"])
-@click.option("--p-path", cls=Mutex, not_required_if=["p"])
-@click.option("--p", cls=Mutex, not_required_if=["p-path"], help="The prime p.")
-@click.option("--q-path", cls=Mutex, not_required_if=["q"])
-@click.option("--q", cls=Mutex, not_required_if=["q-path"], help="The prime q.")
+@click.option("--public-key-path", type=click.Path())
+@click.option("--public-key")
+@click.option("--p-path")
+@click.option("--p", help="The prime p.")
+@click.option("--q-path")
+@click.option("--q", help="The prime q.")
 @click.option(
     "--n",
     help="The private number n.",
@@ -86,8 +53,12 @@ def generate(
             q = f.readline()
         generate_key(public_key_path, p, q, n, e)
 
-    else:
+    elif p is not None and q is not None:
         generate_key(public_key_path, p, q, n, e)
+
+    else:
+        p = click.prompt("P")
+        q = click.prompt("Q")
 
 
 # Export Subcommand
