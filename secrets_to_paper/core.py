@@ -1,7 +1,7 @@
 import click
 from secrets_to_paper.export import write_secret_to_disk
 from secrets_to_paper.parse import pdf_to_secret
-from secrets_to_paper.generate import generate_key
+from secrets_to_paper.generate import generate_rsa_key, generate_ecc_key
 import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
@@ -10,12 +10,13 @@ from PIL import Image
 @click.group()
 @click.option("--debug/--no-debug", default=False)
 def stp(debug):
-    click.echo("Debug mode is %s" % ("on" if debug else "off"))
+    if debug:
+        click.echo("Debug mode is on")
 
 
 # Generate Subcommand
 @stp.command(
-    "generate", short_help="Helper function to generate private key from P and Q.",
+    "gen-rsa", short_help="Helper function to generate RSA private key from P and Q.",
 )
 @click.option("--public-key-path", type=click.Path())
 @click.option("--public-key")
@@ -51,14 +52,28 @@ def generate(
 
         with open(q_path) as f:
             q = f.readline()
-        generate_key(public_key_path, p, q, n, e)
+        generate_rsa_key(public_key_path, p, q, n, e)
 
     elif p is not None and q is not None:
-        generate_key(public_key_path, p, q, n, e)
+        generate_rsa_key(public_key_path, p, q, n, e)
 
     else:
         p = click.prompt("P")
         q = click.prompt("Q")
+
+
+# Generate Subcommand
+@stp.command(
+    "gen-ecc",
+    short_help="Helper function to generate ECC private key from A, B, and D.",
+)
+@click.option("--secret-number", help="The secret number.")
+@click.option("--public-number", help="The public number.")
+def generate(secret_number=None, public_number=None):
+    """
+    Generate an ECC secret key from public and secret numbers.
+    """
+    generate_ecc_key(secret_number, public_number)
 
 
 # Export Subcommand
