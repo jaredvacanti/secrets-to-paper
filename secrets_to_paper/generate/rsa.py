@@ -12,14 +12,6 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_crt_dmp1,
     rsa_crt_dmq1,
 )
-from cryptography.hazmat.primitives.asymmetric.ec import (
-    EllipticCurvePrivateNumbers,
-    EllipticCurvePublicNumbers,
-    SECP256R1,
-    EllipticCurvePublicKey,
-    EllipticCurvePrivateKeyWithSerialization,
-    derive_private_key,
-)
 
 
 def generate_rsa_key(public_key_path, p, q, n, e):
@@ -77,24 +69,3 @@ def construct_rsa_key(prime1, prime2, mod, exp):
     else:
         p = prime2
         q = prime1
-
-
-def generate_ecc_key(secret_number, public_number):
-
-    secret_int = int(secret_number, 16)
-
-    public_key = EllipticCurvePublicKey.from_encoded_point(
-        SECP256R1(), bytes.fromhex(public_number)
-    )
-    pubkey = public_key.public_bytes(
-        Encoding.PEM, PublicFormat.SubjectPublicKeyInfo
-    ).decode("ascii")
-
-    print(pubkey)
-
-    derived_key = derive_private_key(secret_int, SECP256R1(), default_backend())
-    private_key = derived_key.private_bytes(
-        Encoding.PEM, PrivateFormat.TraditionalOpenSSL, NoEncryption()
-    ).decode("ascii")
-
-    print(private_key)

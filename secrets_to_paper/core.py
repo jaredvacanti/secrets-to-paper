@@ -1,7 +1,8 @@
 import click
 from secrets_to_paper.export import write_secret_to_disk
 from secrets_to_paper.parse import pdf_to_secret
-from secrets_to_paper.generate import generate_rsa_key, generate_ecc_key
+from secrets_to_paper.generate.rsa import generate_rsa_key
+from secrets_to_paper.generate.ecc import generate_ecc_key
 import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
