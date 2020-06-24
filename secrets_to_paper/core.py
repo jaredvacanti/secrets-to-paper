@@ -1,11 +1,15 @@
 import click
-from secrets_to_paper.export import write_secret_to_disk
-from secrets_to_paper.parse import pdf_to_secret
-from secrets_to_paper.generate.rsa import generate_rsa_key
-from secrets_to_paper.generate.ecc import generate_ecc_key
 import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
+from secrets_to_paper.generate.rsa import generate_rsa_key
+from secrets_to_paper.generate.ecc import generate_ecc_key
+from secrets_to_paper.export import write_secret_to_disk
+from secrets_to_paper.parse import pdf_to_secret
 
 # Primary Click Group
 @click.group()
@@ -81,12 +85,49 @@ def generate(secret_number=None, public_number=None):
 @stp.command(
     "export", short_help="Helper functions for writing secret keys.",
 )
-@click.argument("private-key-path", type=click.Path())
-def export(private_key_path):
+@click.option("--private-key-path", type=click.Path())
+@click.option("--output-path", type=click.Path())
+def export(private_key_path=None, output_path=None):
     """
     Generate a pdf of the secrets.
     """
 
-    img = qrcode.make("Some data here")
-    print(img)
-    # decode(Image.open("pyzbar/tests/code128.png"))
+    with open(private_key_path, "rb") as f:
+        pem_data = f.read()
+
+    print(pem_data)
+
+    # pem = load_pem_private_key(pem_data, None, default_backend())
+    # print(pem)
+
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+
+    qr.add_data(pem_data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # img.show()
+    write_secret_to_disk(img, output_path)
+
+
+# Parse Subcommand
+@stp.command(
+    "parse", short_help="Helper functions to parse secret keys into PEM format.",
+)
+@click.option("--input-file-path", type=click.Path())
+def export(input_file_path=None):
+    """
+    Generate a secret key from the pdf.
+    """
+
+    codes = decode(Image.open(input_file_path))
+
+    for code in codes:
+        print(code.data.decode("utf-8"))
+

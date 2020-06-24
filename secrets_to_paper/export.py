@@ -1,10 +1,22 @@
 import subprocess
 import base64
 import os
+import io
 import errno
 
+from PIL import Image
 
-def write_secret_to_disk(secret):
+
+def write_secret_to_disk(secret, output):
+
+    imgByteArr = io.BytesIO()
+    secret.save(imgByteArr, format=secret.format)
+    imgByteArr = imgByteArr.getvalue()
+
+    with open(output, "wb") as f:
+        f.write(imgByteArr)
+        f.close()
+
     return None
 
 
@@ -25,23 +37,6 @@ def export_as_b64(key_id, num_files):
     return chunks
 
 
-def write_chunks_png(chunks, outfile_path):
-    """
-    Writes the data chunks to png files.
-    """
-
-    make_output_dir(outfile_path)
-    for i, chunk in enumerate(chunks):
-        # Set version to none, and use fit=True when making qrcode so the version,
-        # which determines the amount of data the qrcode can store, is selected automatically.
-        qrc = qrcode.QRCode(version=None)
-        qrc.add_data(chunk)
-        qrc.make(fit=True)
-        image = qrc.make_image()
-        image.save("%s%d.png" % (outfile_path, i + 1), "PNG")
-    return len(chunks)
-
-
 def write_chunks_b64(chunks, outfile_path):
     """
     Writes the data chunks to text files as base64 encoded strings.
@@ -59,21 +54,6 @@ def write_chunks_b64(chunks, outfile_path):
         with open("%s%d.%s" % (out_filename, i + 1, outfile_ext), "wb") as txt_file:
             txt_file.write(chunk)
     return len(chunks)
-
-
-def make_output_dir(out_filename):
-    """
-    Makes the directory to output the file to if it doesn't exist.
-    """
-
-    # check if output is to cwd, or is a path
-    dirname = os.path.dirname(out_filename)
-    if dirname != "" and not os.path.exists(dirname):
-        try:
-            os.makedirs(os.path.dirname(out_filename))
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
 
 
 def chunk_up(base64str, num_chunks):

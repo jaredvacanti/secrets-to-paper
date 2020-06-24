@@ -49,17 +49,3 @@ def read_chunks_b64(in_filenames):
             chunk = in_file.read()
             base64str += chunk
     return base64str
-
-    # with open(private_key_path) as private_key:
-
-    #     priv_key = serialization.load_pem_private_key(
-    #         private_key.read().encode("ascii"), backend=default_backend(), password=None
-    #     )
-
-    # print(
-    #     priv_key.private_bytes(
-    #         encoding=serialization.Encoding.PEM,
-    #         format=serialization.PrivateFormat.TraditionalOpenSSL,
-    #         encryption_algorithm=serialization.NoEncryption(),
-    #     ).decode("ascii")
-    # )
