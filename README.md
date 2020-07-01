@@ -28,9 +28,14 @@ has been restored correctly.
 #### Initializing a virtual environment:
 
 ```
+# requires >= python3.8
 pyenv shell 3.8.3
+
+# init & activate virtualenvironment
 python -m venv .venv
 source .venv/bin/activate
+
+# install poetry in venv, and use to install local package
 pip install --upgrade pip
 pip install poetry
 poetry install
@@ -43,6 +48,7 @@ installations. During development, it's often more convenient to run
 poetry run stp ...
 ```
 
+instead of re-installing before invocations.
 
 ## Testing
 
