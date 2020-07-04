@@ -21,6 +21,24 @@ has been restored correctly.
 
 - paperkey (for GPG keys)
 - zbar/libzbar0
+- wkhtmltopdf
+
+### Usage
+
+```
+Usage: stp [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --debug / --no-debug
+  --help                Show this message and exit.
+
+Commands:
+  export      Helper functions for writing secret keys.
+  export-gpg  Helper function to generate archive of GPG keys.
+  gen-ecc     Helper function to generate ECC private key from A, B, and D.
+  gen-rsa     Helper function to generate RSA private key from P and Q.
+  parse       Helper functions to parse secret keys into PEM format.
+```
 
 
 ## Development
