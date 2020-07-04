@@ -2,6 +2,8 @@ import click
 import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
+from pretty_bad_protocol import gnupg
+from pathlib import Path, PurePath
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -19,7 +21,7 @@ def stp(debug):
         click.echo("Debug mode is on")
 
 
-# Generate Subcommand
+# Generate RSA Subcommand
 @stp.command(
     "gen-rsa", short_help="Helper function to generate RSA private key from P and Q.",
 )
@@ -67,7 +69,7 @@ def generate(
         q = click.prompt("Q")
 
 
-# Generate Subcommand
+# Generate ECC Subcommand
 @stp.command(
     "gen-ecc",
     short_help="Helper function to generate ECC private key from A, B, and D.",
@@ -79,6 +81,26 @@ def generate(secret_number=None, public_number=None):
     Generate an ECC secret key from public and secret numbers.
     """
     generate_ecc_key(secret_number, public_number)
+
+
+# Export GPG Key Subcommand
+@stp.command(
+    "export-gpg", short_help="Helper function to generate archive of GPG keys.",
+)
+@click.option(
+    "--gpg-dir", type=click.Path(), default=PurePath(Path.home(), ".gnupg"),
+)
+@click.option("--keygrip", help="The GPG keygrip.")
+def export_gpg(keygrip=None, gpg_dir=None):
+    """
+    Generate a PDF archive document froma  GPG fingerprint ID.
+    """
+
+    gpg = gnupg.GPG(homedir=gpg_dir)
+
+    print(gpg.list_keys())
+    secret = gpg.export_keys([keygrip], secret=True)
+    write_secret_to_disk(secret, "output.pdf")
 
 
 # Export Subcommand
