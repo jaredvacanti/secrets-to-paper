@@ -164,6 +164,17 @@ version = "0.8.0"
 
 [[package]]
 category = "main"
+description = "A wrapper around the pdftoppm and pdftocairo command line tools to convert PDF to a PIL Image list."
+name = "pdf2image"
+optional = false
+python-versions = "*"
+version = "1.13.1"
+
+[package.dependencies]
+pillow = "*"
+
+[[package]]
+category = "main"
 description = "Wkhtmltopdf python wrapper to convert html to pdf using the webkit rendering engine and qt"
 name = "pdfkit"
 optional = false
@@ -345,7 +356,7 @@ python-versions = "*"
 version = "0.2.4"
 
 [metadata]
-content-hash = "1ab3bc623161439a5797805f68457508d16f7c9d4be2f48a74f1126d4a46c092"
+content-hash = "b2abe8ace6cad33c33b669e67fd123eb8cb77d1e6f3902b7f5ec7c54079361d9"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -481,6 +492,10 @@ packaging = [
 pathspec = [
     {file = "pathspec-0.8.0-py2.py3-none-any.whl", hash = "sha256:7d91249d21749788d07a2d0f94147accd8f845507400749ea19c1ec9054a12b0"},
     {file = "pathspec-0.8.0.tar.gz", hash = "sha256:da45173eb3a6f2a5a487efba21f050af2b41948be6ab52b6a1e3ff22bb8b7061"},
+]
+pdf2image = [
+    {file = "pdf2image-1.13.1-py3-none-any.whl", hash = "sha256:ed2935991de449e55ceea2eff7c5d18c7b5cde4a2f6b9f3d56a430e8c5b77969"},
+    {file = "pdf2image-1.13.1.tar.gz", hash = "sha256:df6b825f7f26df35b873642725a7ee37dfc8a531b711274a8ad2ee830c8b72d0"},
 ]
 pdfkit = [
     {file = "pdfkit-0.6.1-py2-none-any.whl", hash = "sha256:6a866c9659e62a81abd72cdb32b400762d76085b964beb0b15106d573a539677"},
