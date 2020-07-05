@@ -17,7 +17,7 @@ def grouper(iterable, n, fillvalue=None):
     return zip_longest(*args, fillvalue=fillvalue)
 
 
-def write_secret_to_disk(output_file, paperkey_b16, qr_images=[]):
+def write_secret_to_disk(output_file, paperkey_b16, ascii_key, qr_images=[]):
 
     templateLoader = jinja2.PackageLoader("secrets_to_paper", "templates")
     templateEnv = jinja2.Environment(loader=templateLoader, keep_trailing_newline=True)
@@ -25,7 +25,9 @@ def write_secret_to_disk(output_file, paperkey_b16, qr_images=[]):
 
     options = {"quiet": ""}
 
-    rendered = template.render(qr_images=qr_images, paperkey_b16=paperkey_b16)
+    rendered = template.render(
+        qr_images=qr_images, paperkey_b16=paperkey_b16, ascii_key=ascii_key
+    )
 
     pdfkit.from_string(rendered, output_file, options=options)
 
@@ -38,11 +40,16 @@ def export_gpg_b64(key_id):
     """
 
     secret = subprocess.run(["gpg", "--export-secret-key", key_id], capture_output=True)
+    secret_key_ascii = subprocess.run(
+        ["gpg", "--export-secret-key", "--armor", key_id], capture_output=True
+    ).stdout.decode("ascii")
 
+    # used for producing QR codes (paperkey pulls relevant secret bits)
     paperkey_raw = subprocess.run(
         ["paperkey", "--output-type", "raw"], input=secret.stdout, capture_output=True
     )
 
+    # used for produces textual output
     paperkey = subprocess.run(
         ["paperkey", "--output-type", "base16"],
         input=secret.stdout,
@@ -50,14 +57,18 @@ def export_gpg_b64(key_id):
     )
     paperkey_output = paperkey.stdout.decode("utf-8")
 
+    # split the private bits of the QR-code into 150-byte chunks
+
     qr_codes = []
-    for chunk in grouper(paperkey_raw.stdout, 50):
+    for chunk in grouper(paperkey_raw.stdout, 150):
         chunk = [x for x in chunk if x]
 
+        # Set version to None and use the fit parameter when making the code to
+        # determine this automatically.
         qr = qrcode.QRCode(
-            version=1,
+            version=None,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=10,
+            box_size=2,
             border=4,
         )
 
@@ -72,12 +83,7 @@ def export_gpg_b64(key_id):
 
         qr_codes.append(img_str)
 
-        # imgByteArr = buffered.getvalue()
-
-        # with open("test.jpeg", "wb") as f:
-        #     f.write(imgByteArr)
-        #     f.close()
-
-        # break
-
-    write_secret_to_disk("output.pdf", paperkey_output, qr_images=qr_codes)
+    filename = key_id + ".pdf"
+    write_secret_to_disk(
+        filename, paperkey_output, secret_key_ascii, qr_images=qr_codes
+    )
