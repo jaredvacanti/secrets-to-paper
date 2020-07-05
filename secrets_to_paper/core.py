@@ -1,6 +1,5 @@
 import click
 import qrcode
-from pyzbar.pyzbar import decode
 from PIL import Image
 
 # from pretty_bad_protocol import gnupg
@@ -153,14 +152,10 @@ def export(private_key_path=None, output_path=None):
 @stp.command(
     "parse", short_help="Helper functions to parse secret keys into PEM format.",
 )
-@click.option("--input-file-path", type=click.Path())
-def export(input_file_path=None):
+@click.option("--input-file", type=click.Path())
+def export(input_file=None):
     """
     Generate a secret key from the pdf.
     """
 
-    codes = decode(Image.open(input_file_path))
-
-    for code in codes:
-        print(code.data.decode("utf-8"))
-
+    pdf_to_secret(input_file)
