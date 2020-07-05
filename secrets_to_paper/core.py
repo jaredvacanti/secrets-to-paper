@@ -2,7 +2,8 @@ import click
 import qrcode
 from pyzbar.pyzbar import decode
 from PIL import Image
-from pretty_bad_protocol import gnupg
+
+# from pretty_bad_protocol import gnupg
 from pathlib import Path, PurePath
 
 from cryptography.hazmat.backends import default_backend
@@ -10,7 +11,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 from secrets_to_paper.generate.rsa import generate_rsa_key
 from secrets_to_paper.generate.ecc import generate_ecc_key
-from secrets_to_paper.export import write_secret_to_disk
+from secrets_to_paper.export import write_secret_to_disk, export_gpg_b64
 from secrets_to_paper.parse import pdf_to_secret
 
 # Primary Click Group
@@ -96,11 +97,21 @@ def export_gpg(keygrip=None, gpg_dir=None):
     Generate a PDF archive document froma  GPG fingerprint ID.
     """
 
-    gpg = gnupg.GPG(homedir=gpg_dir)
+    # gpg = gnupg.GPG(homedir=gpg_dir)
+    # c = gpg.Context(armor=False)
 
-    print(gpg.list_keys())
-    secret = gpg.export_keys([keygrip], secret=True)
-    write_secret_to_disk(secret, "output.pdf")
+    # key = c.get_key(keygrip, secret=True)
+    # print(dir(key))
+
+    # with open("output.txt", "wb") as f:
+    #     f.write(key)
+
+    # print(str(key))
+
+    # print(gpg.list_keys())
+    # secret = gpg.export_keys([keygrip], secret=True, armor=False)
+    # write_secret_to_disk(secret, "output.pdf")
+    export_gpg_b64(keygrip)
 
 
 # Export Subcommand
