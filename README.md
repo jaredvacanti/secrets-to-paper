@@ -23,6 +23,20 @@ has been restored correctly.
 - zbar/libzbar0
 - wkhtmltopdf
 
+#### Ubuntu/Linux
+
+
+```
+sudo apt-get install zbar paperkey wkhtml2pdf
+```
+
+#### MacOS X
+
+```
+brew install zbar wkhtmlpdf
+brew cask install paperkey
+```
+
 ### Usage
 
 ```
