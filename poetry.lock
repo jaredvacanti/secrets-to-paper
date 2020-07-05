@@ -190,17 +190,6 @@ version = "0.13.1"
 dev = ["pre-commit", "tox"]
 
 [[package]]
-category = "main"
-description = "A Python wrapper for GnuPG"
-name = "pretty-bad-protocol"
-optional = false
-python-versions = "*"
-version = "3.1.1"
-
-[package.extras]
-docs = ["Sphinx (>=1.1)", "sphinxcontrib-fulltoc (1.0)"]
-
-[[package]]
 category = "dev"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 name = "py"
@@ -356,7 +345,7 @@ python-versions = "*"
 version = "0.2.4"
 
 [metadata]
-content-hash = "8fd13429fb58f9363c0d22d69e65c964d9fbd1620f3d63dc2e611d1d66b06938"
+content-hash = "1ab3bc623161439a5797805f68457508d16f7c9d4be2f48a74f1126d4a46c092"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -527,11 +516,6 @@ pillow = [
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
-]
-pretty-bad-protocol = [
-    {file = "pretty-bad-protocol-3.1.1.tar.gz", hash = "sha256:fb73797eb6344e3680c919e2af367f9a019ee7c189d3ed7f5d843edde911f73b"},
-    {file = "pretty_bad_protocol-3.1.1-py2.7.egg", hash = "sha256:935ec158902560d413e9da4abd2ff79df1b6c7c419e8a2db950448bc74e2eb8b"},
-    {file = "pretty_bad_protocol-3.1.1-py3.4.egg", hash = "sha256:9110ef2f7a677e0c3d6ea172fdfc25e076ac97bf28aa1a6c8a50c885d40a684b"},
 ]
 py = [
     {file = "py-1.8.1-py2.py3-none-any.whl", hash = "sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0"},
