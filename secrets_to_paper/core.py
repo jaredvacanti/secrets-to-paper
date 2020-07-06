@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 from secrets_to_paper.generate.rsa import generate_rsa_key
 from secrets_to_paper.generate.ecc import generate_ecc_key
-from secrets_to_paper.export import write_secret_to_disk, export_gpg_b64
+from secrets_to_paper.export import export_gpg_b64, export_rsa, export_ecc
 from secrets_to_paper.parse import pdf_to_secret
 
 # Primary Click Group
@@ -96,20 +96,6 @@ def export_gpg(keygrip=None, gpg_dir=None):
     Generate a PDF archive document froma  GPG fingerprint ID.
     """
 
-    # gpg = gnupg.GPG(homedir=gpg_dir)
-    # c = gpg.Context(armor=False)
-
-    # key = c.get_key(keygrip, secret=True)
-    # print(dir(key))
-
-    # with open("output.txt", "wb") as f:
-    #     f.write(key)
-
-    # print(str(key))
-
-    # print(gpg.list_keys())
-    # secret = gpg.export_keys([keygrip], secret=True, armor=False)
-    # write_secret_to_disk(secret, "output.pdf")
     export_gpg_b64(keygrip)
 
 
@@ -118,8 +104,10 @@ def export_gpg(keygrip=None, gpg_dir=None):
     "export", short_help="Helper functions for writing secret keys.",
 )
 @click.option("--private-key-path", type=click.Path())
-@click.option("--output-path", type=click.Path())
-def export(private_key_path=None, output_path=None):
+@click.option("--key-type", help="ECC or RSA  key type.")
+@click.option("--key-label", help="Label for key output.")
+@click.option("--output-path", type=click.Path(), default="output")
+def export(private_key_path=None, key_type=None, key_label=None, output_path=None):
     """
     Generate a pdf of the secrets.
     """
@@ -127,25 +115,14 @@ def export(private_key_path=None, output_path=None):
     with open(private_key_path, "rb") as f:
         pem_data = f.read()
 
-    print(pem_data)
+    pem = load_pem_private_key(pem_data, None, default_backend())
 
-    # pem = load_pem_private_key(pem_data, None, default_backend())
-    # print(pem)
-
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-
-    qr.add_data(pem_data)
-    qr.make(fit=True)
-
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    # img.show()
-    write_secret_to_disk(img, output_path)
+    if key_type == "ecc":
+        export_ecc(pem_data, output_path, key_label=key_label)
+    elif key_type == "rsa":
+        export_rsa(pem_data, output_path, key_label=key_label)
+    else:
+        click.echo("Key type not supported.")
 
 
 # Parse Subcommand

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+
+    <style>
+        .keep-together {
+            page-break-inside: avoid;
+        }
+
+        .break-before {
+            page-break-before: always;
+        }
+
+        .break-after {
+            page-break-after: always;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>ECC Secret Key: {{key_label}}</h3>
+
+    <div>
+        <code>
+            {{ ascii_key.replace('\n', '<br>') }}
+        </code>
+        <hr>
+    </div>
+
+    <div>
+        <p>QR Codes:</p>
+
+        {% for img in qr_images %}
+
+        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe}}" alt="Red dot" />
+
+        {% endfor %}
+
+        <hr>
+
+    </div>
+
+</body>
+
+</html>
