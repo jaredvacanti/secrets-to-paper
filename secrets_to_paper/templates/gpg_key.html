@@ -1,51 +1,60 @@
 <!DOCTYPE html>
 
 <head>
-
-    <style>
-        .keep-together {
-            page-break-inside: avoid;
-        }
-
-        .break-before {
-            page-break-before: always;
-        }
-
-        .break-after {
-            page-break-after: always;
-        }
-    </style>
 </head>
 
 <body>
 
-    <div class="keep-together break-after">
-        <code>
-        {{ paperkey_b16.replace('\n', '<br>') }}
-    </code>
-        <hr>
+    <div>
+        <pre>
+        {{ paperkey_b16 }}
+        </pre>
+
     </div>
 
 
-    <div class="keep-together break-before">
-        <code>
-            {{ ascii_key.replace('\n', '<br>') }}
-        </code>
+    <div class="keep-together">
         <hr>
-    </div>
 
-
-    <div class="keep-together break-before">
-        <p>QR Codes:</p>
+        <pre>-----BEGIN PRIVATE QR CODES-----</pre>
 
         {% for img in qr_images %}
 
-        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe}}" alt="Red dot" />
+        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe }}" />
 
         {% endfor %}
 
+        <pre>-----END PRIVATE QR CODES-----</pre>
+
+    </div>
+
+    <div>
+
+        <pre>-----BEGIN PUBLIC QR CODES-----</pre>
+
+        {% for img in qr_images %}
+
+        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe }}" />
+
+        {% endfor %}
+
+        <pre>-----END PUBLIC QR CODES-----</pre>
+
         <hr>
 
+    </div>
+
+
+    <div class="break-before">
+        <pre>
+            {{ ascii_key }}
+        </pre>
+    </div>
+
+    <div>
+        <pre>
+            {{ public_key_ascii }}
+        </pre>
     </div>
 
 </body>
