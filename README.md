@@ -21,20 +21,18 @@ has been restored correctly.
 
 - paperkey (for GPG keys)
 - zbar/libzbar0
-- wkhtmltopdf
 
 #### Ubuntu/Linux
 
 
 ```
-sudo apt-get install zbar paperkey wkhtml2pdf
+sudo apt-get install zbar paperkey
 ```
 
 #### MacOS X
 
 ```
-brew install zbar wkhtmlpdf
-brew cask install paperkey
+brew install zbar paperkey
 ```
 
 ### Usage
