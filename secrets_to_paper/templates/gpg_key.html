@@ -16,14 +16,11 @@
 
 
     <div class="keep-together">
-        <hr>
 
         <pre>-----BEGIN PRIVATE QR CODES-----</pre>
 
         {% for img in qr_images %}
-
-        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe }}" />
-
+        <img src="data:image/jpeg;base64,{{ img.decode('ascii') | safe }}" />
         {% endfor %}
 
         <pre>-----END PRIVATE QR CODES-----</pre>
@@ -34,15 +31,12 @@
 
         <pre>-----BEGIN PUBLIC QR CODES-----</pre>
 
-        {% for img in qr_images %}
-
-        <img src="data:image/jpeg;base64,{{img.decode('ascii') | safe }}" />
-
+        {% for img in public_qr_images %}
+        <img src="data:image/jpeg;base64,{{ img.decode('ascii') | safe }}" />
         {% endfor %}
 
         <pre>-----END PUBLIC QR CODES-----</pre>
 
-        <hr>
 
     </div>
 

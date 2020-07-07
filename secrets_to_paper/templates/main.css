@@ -21,7 +21,9 @@ pre {
         content: "# " counter(page) " of " counter(pages);
     }
 }
+
 img {
     transform: scale(1.1);
     padding:10px;
+    vertical-align: top;
 }
