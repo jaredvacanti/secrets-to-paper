@@ -8,13 +8,27 @@
             "name": "stp gen-gpg",
             "type": "python",
             "request": "launch",
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/.venv/bin/stp",
             "console": "integratedTerminal",
             "args": [
                 "export-gpg",
                 "--keygrip",
                 "6E66FC037A3AEEDB"
+            ]
+        },
+        {
+            "name": "stp parse-gpg",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "parse",
+                "--gpg",
+                "--input-file",
+                "tests/6E66FC037A3AEEDB.pdf"
             ]
         }
     ]
