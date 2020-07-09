@@ -1,6 +1,16 @@
 import subprocess
-from secrets_to_paper.export import write_pdf_to_disk, get_qr_codes
-from secrets_to_paper.export import templateEnv, templateLoader
+from secrets_to_paper.export.qr import get_qr_codes
+from secrets_to_paper.export import templateEnv, templateLoader, write_pdf_to_disk
+import subprocess
+import base64
+import os
+import io
+import errno
+import jinja2
+import qrcode
+from PIL import Image
+from itertools import zip_longest
+import datetime
 
 
 def render_gpg_html(
@@ -10,6 +20,7 @@ def render_gpg_html(
     public_qr_images=[],
     public_key_ascii="",
     key_id="",
+    timestamp=None,
 ):
 
     template = templateEnv.get_template("gpg_key.html")
@@ -21,6 +32,7 @@ def render_gpg_html(
         public_key_ascii=public_key_ascii,
         key_id=key_id,
         public_qr_images=public_qr_images,
+        timestamp=datetime.datetime.now().strftime("%Y-%m-%d %I:%M %p"),
     )
 
     return rendered
@@ -53,10 +65,8 @@ def export_gpg(key_id):
     )
     paperkey_output = paperkey.stdout.decode("utf-8")
 
-    # split the private bits of the QR-code into 150-byte chunks
-
-    qr_codes = get_qr_codes(paperkey_raw.stdout, 400)
-    public_qr_codes = get_qr_codes(public_key, 400)
+    qr_codes = get_qr_codes(paperkey_raw.stdout)
+    public_qr_codes = get_qr_codes(public_key)
 
     filename = key_id + ".pdf"
 
