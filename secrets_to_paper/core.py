@@ -1,16 +1,16 @@
 import click
-import qrcode
-from PIL import Image
 
-# from pretty_bad_protocol import gnupg
 from pathlib import Path, PurePath
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 
 from secrets_to_paper.generate.rsa import generate_rsa_key
 from secrets_to_paper.generate.ecc import generate_ecc_key
-from secrets_to_paper.export import export_gpg_b64, export_rsa, export_ecc
+from secrets_to_paper.export.gpg import export_gpg
+from secrets_to_paper.export.asymmetric import export_rsa, export_ecc
 from secrets_to_paper.parse import pdf_to_secret
 
 # Primary Click Group
@@ -75,12 +75,12 @@ def generate(
     short_help="Helper function to generate ECC private key from A, B, and D.",
 )
 @click.option("--secret-number", help="The secret number.")
-@click.option("--public-number", help="The public number.")
-def generate(secret_number=None, public_number=None):
+@click.option("--curve", help="The curve type to use.", default="secp256r1")
+def generate(secret_number=None, curve=None):
     """
     Generate an ECC secret key from public and secret numbers.
     """
-    generate_ecc_key(secret_number, public_number)
+    generate_ecc_key(secret_number, curve=curve)
 
 
 # Export GPG Key Subcommand
@@ -91,12 +91,12 @@ def generate(secret_number=None, public_number=None):
     "--gpg-dir", type=click.Path(), default=PurePath(Path.home(), ".gnupg"),
 )
 @click.option("--keygrip", help="The GPG keygrip.")
-def export_gpg(keygrip=None, gpg_dir=None):
+def export_gpg_key(gpg_dir=None, keygrip=None):
     """
     Generate a PDF archive document froma  GPG fingerprint ID.
     """
 
-    export_gpg_b64(keygrip)
+    export_gpg(keygrip)
 
 
 # Export Subcommand
@@ -115,12 +115,19 @@ def export(private_key_path=None, key_type=None, key_label=None, output_path=Non
     with open(private_key_path, "rb") as f:
         pem_data = f.read()
 
-    pem = load_pem_private_key(pem_data, None, default_backend())
+    # load pem data with no password (=None)
+    private_key = load_pem_private_key(pem_data, None, default_backend())
+
+    if type(private_key) is RSAPrivateKey:
+        print("rsa key")
+
+    if type(private_key) is EllipticCurvePrivateKey:
+        print("ecc key")
 
     if key_type == "ecc":
-        export_ecc(pem_data, output_path, key_label=key_label)
+        export_ecc(private_key, output_path, key_label=key_label)
     elif key_type == "rsa":
-        export_rsa(pem_data, output_path, key_label=key_label)
+        export_rsa(private_key, output_path, key_label=key_label)
     else:
         click.echo("Key type not supported.")
 
@@ -130,9 +137,16 @@ def export(private_key_path=None, key_type=None, key_label=None, output_path=Non
     "parse", short_help="Helper functions to parse secret keys into PEM format.",
 )
 @click.option("--input-file", type=click.Path())
-def export(input_file=None):
+@click.option(
+    "--gpg",
+    is_flag=True,
+    default=False,
+    type=click.BOOL,
+    help="Flag if GPG key present in PDF.",
+)
+def export(input_file=None, gpg=False):
     """
     Generate a secret key from the pdf.
     """
 
-    pdf_to_secret(input_file)
+    pdf_to_secret(input_file, gpg=gpg)
