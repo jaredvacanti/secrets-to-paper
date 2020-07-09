@@ -10,7 +10,7 @@
         </pre>
     </div>
 
-    <div>
+    <div class="keep-together">
         <pre>-----BEGIN PRIVATE QR CODES-----</pre>
 
         {% for img in qr_images %}
@@ -28,15 +28,15 @@
 
             <p>Key Type: <code>{{ key_type }}</code> Key Size (bits): <code>{{ key_size }}</code></p>
 
-            <p><strong>P</strong>: <code>{{ p }}</code></p>
-            <p><strong>Q</strong>: <code>{{ q }}</code></p>
+            <p class="keep-together"><strong>P</strong>: <code>{{ p }}</code></p>
+            <p class="keep-together"><strong>Q</strong>: <code>{{ q }}</code></p>
 
-            <p><strong>PQ</strong> = (q - 1) mod p: <code>{{ p }}</code></p>
-            <p><strong>DP1</strong> = d mod (p - 1): <code>{{ p }}</code></p>
-            <p><strong>DQ1</strong> = d mod (q - 1): <code>{{ q }}</code></p>
+            <p class="keep-together"><strong>PQ</strong> = (q - 1) mod p: <code>{{ d }}</code></p>
+            <p class="keep-together"><strong>DP1</strong> = d mod (p - 1): <code>{{ dmp1 }}</code></p>
+            <p class="keep-together"><strong>DQ1</strong> = d mod (q - 1): <code>{{ dmq1 }}</code></p>
 
-            <p><strong>Modulus:</strong> <code>{{ p }}</code></p>
-            <p><strong>Exponent:</strong> <code>{{ q }}</code></p>
+            <p class="keep-together"><strong>Modulus:</strong> <code>{{ n }}</code></p>
+            <p class="keep-together"><strong>Exponent:</strong> <code>{{ e }}</code></p>
 
         </div>
     </div>
