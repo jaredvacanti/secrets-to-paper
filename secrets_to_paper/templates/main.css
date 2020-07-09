@@ -27,3 +27,10 @@ img {
     padding:10px;
     vertical-align: top;
 }
+
+.small-font {
+    font-size: 10px;
+}
+code {
+    word-wrap:break-word;
+}

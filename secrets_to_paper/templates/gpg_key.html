@@ -6,8 +6,14 @@
 <body>
 
     <h3> GnuPG Key Archive - 0x{{ key_id }}</h3>
+    <h5>Generated at: {{ timestamp }} </h5>
 
     <div>
+        <div class="small-font">
+            <strong>Paperkey Raw Archive:</strong>
+            This includes only the bits required to reconstitute a key
+            using the paperkey program.
+        </div>
         <pre>
         {{ paperkey_b16 }}
         </pre>
