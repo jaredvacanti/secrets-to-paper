@@ -5,7 +5,65 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "stp gen-gpg",
+            "name": "stp gen-ecc",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "gen-ecc",
+                "--secret-number",
+                "CBCB0D876EA88396342FE09EFDEB62A51D76CEC491232AA4D8464AA59D5FD840"
+            ]
+        },
+        {
+            "name": "stp gen-rsa",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "gen-rsa",
+                "--p",
+                "CBCB0D876EA88396342FE09EFDEB62A51D76CEC491232AA4D8464AA59D5FD840",
+                "--q",
+                "CBCB0D876EA88396342FE09EFDEB62A51D76CEC491232AA4D8464AA59D5FD840"
+            ]
+        },
+        {
+            "name": "stp export (ecc)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "export",
+                "--private-key-path",
+                "tests/test-ec.pem",
+                "--key-type",
+                "ecc"
+            ]
+        },
+        {
+            "name": "stp export (rsa)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "export",
+                "--private-key-path",
+                "tests/test-rsa-4096.pem",
+                "--key-type",
+                "rsa"
+            ]
+        },
+        {
+            "name": "stp export-gpg",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -18,7 +76,7 @@
             ]
         },
         {
-            "name": "stp parse-gpg",
+            "name": "stp parse (--gpg)",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -30,6 +88,32 @@
                 "--input-file",
                 "tests/6E66FC037A3AEEDB.pdf"
             ]
-        }
+        },
+        {
+            "name": "stp parse (rsa)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "parse",
+                "--input-file",
+                "tests/test-ec.pem"
+            ]
+        },
+        {
+            "name": "stp parse (ecc)",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/.venv/bin/stp",
+            "console": "integratedTerminal",
+            "args": [
+                "parse",
+                "--input-file",
+                "tests/test-rsa.pem"
+            ]
+        },
     ]
 }
