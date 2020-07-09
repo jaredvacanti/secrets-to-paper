@@ -24,6 +24,9 @@ def generate_rsa_key(public_key_path, p, q, n, e):
             public_key.read().encode("ascii"), backend=default_backend()
         )
 
+    # a lot of software (including openssl) expects p to be the larger prime
+    # instead of expecting the user to get it right, just reassign them here
+    p, q = sorted((p, q))
     q = int(q, 16)
     p = int(p, 16)
 
@@ -47,27 +50,3 @@ def generate_rsa_key(public_key_path, p, q, n, e):
     )
 
     print(pem.decode("ascii"))
-
-    # pub_nums = RSAPublicNumbers(e, n)
-    # priv_nums = RSAPrivateNumbers(p, q, d, dmp1, dmq1, iqmp, pub_nums)
-    # priv_key = priv_nums.private_key(default_backend())
-
-    # pem = priv_key.private_bytes(
-    #     encoding=serialization.Encoding.PEM,
-    #     format=serialization.PrivateFormat.TraditionalOpenSSL,
-    #     encryption_algorithm=serialization.NoEncryption(),
-    # )
-
-    # print(pem.decode("ascii"))
-
-
-def construct_rsa_key(prime1, prime2, mod, exp):
-
-    # a lot of software (including openssl) expects p to be the larger prime
-    # instead of expected the user to get it right, just reassign them here
-    if prime1 > prime2:
-        p = prime1
-        q = prime2
-    else:
-        p = prime2
-        q = prime1
