@@ -86,7 +86,7 @@
                 "parse",
                 "--gpg",
                 "--input-file",
-                "tests/6E66FC037A3AEEDB.pdf"
+                "tests/gpg.pdf"
             ]
         },
         {
@@ -99,7 +99,7 @@
             "args": [
                 "parse",
                 "--input-file",
-                "tests/test-ec.pem"
+                "tests/ecc.pdf"
             ]
         },
         {
@@ -112,7 +112,7 @@
             "args": [
                 "parse",
                 "--input-file",
-                "tests/test-rsa.pem"
+                "tests/rsa.pdf"
             ]
         },
     ]
