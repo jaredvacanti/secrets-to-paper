@@ -1,9 +1,11 @@
 # secrets-to-paper
 
+![Publish to PyPI](https://github.com/jaredvacanti/secrets-to-paper/workflows/Publish%20to%20PyPI/badge.svg)
+
 A command-line tool to convert secret keys to printable PDFs and to parse those
 PDFs back to usable secret keys.
 
-Note: Python 3.8+ is required to use this simple package. Python 3.8 introduced
+Note: Python 3.8+ is required to use this package. Python 3.8 introduced
 a new computation for
 [modular inverses](https://docs.python.org/3/library/functions.html#pow).
 
