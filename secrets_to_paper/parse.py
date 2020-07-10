@@ -37,6 +37,9 @@ def pdf_to_secret(pdf_file, gpg=False):
         with open("public-key.gpg", "wb") as f:
             f.write(public_key)
 
+        # needed to de-armor the gpg key back to binary
+        subprocess.run(["gpg", "--dearmor", "public-key.gpg"])
+
         private_key = b"".join([qr.data for qr in private_qr_codes])
 
         parsed_gpg = subprocess.run(
@@ -47,8 +50,10 @@ def pdf_to_secret(pdf_file, gpg=False):
 
         subprocess.run(["gpg", "--import"], input=parsed_gpg.stdout)
 
-        file_to_rem = pathlib.Path("public-key.gpg")
-        file_to_rem.unlink()
+        pubkey_rem = pathlib.Path("public-key.gpg")
+        pubkey_rem.unlink()
+        pubkey_rem = pathlib.Path("public-key.gpg.gpg")
+        pubkey_rem.unlink()
 
     else:
         # just print the parsed key to stdout, unless outfile then write to disk
