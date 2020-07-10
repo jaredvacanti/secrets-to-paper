@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secrets-to-paper"
-version = "0.0.2"
+version = "0.0.3"
 description = "A command line tool to help with key-to-paper and paper-to-key."
 authors = ["Jared Vacanti <jaredvacanti@gmail.com>"]
 license = "MIT"
