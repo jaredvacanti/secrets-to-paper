@@ -51,11 +51,13 @@ def export_gpg(key_id):
     public_key = subprocess.run(
         ["gpg", "--export", "--armor", key_id], capture_output=True
     ).stdout
+    public_qr_codes = get_qr_codes(public_key)
 
     # used for producing QR codes (paperkey pulls relevant secret bits)
     paperkey_raw = subprocess.run(
         ["paperkey", "--output-type", "raw"], input=secret.stdout, capture_output=True
     )
+    qr_codes = get_qr_codes(base64.b64encode(paperkey_raw.stdout))
 
     # used for produces textual output
     paperkey = subprocess.run(
@@ -64,9 +66,6 @@ def export_gpg(key_id):
         capture_output=True,
     )
     paperkey_output = paperkey.stdout.decode("utf-8")
-
-    qr_codes = get_qr_codes(paperkey_raw.stdout)
-    public_qr_codes = get_qr_codes(public_key)
 
     filename = key_id + ".pdf"
 
